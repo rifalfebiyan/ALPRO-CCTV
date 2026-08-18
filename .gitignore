@@ -1,19 +1,17 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
+# Next.js
+.next/
+out/
+build/
 
 # misc
 .DS_Store
@@ -23,10 +21,15 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
-# local env files
+# local env files (Paling Penting!)
 .env*.local
 .env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
 # vercel
 .vercel
@@ -34,3 +37,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ALPRO Backend Specific Ignore
+backend/public/hls/
+backend/videos/
