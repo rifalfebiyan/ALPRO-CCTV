@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertCircle, Activity, Video, HardDrive, ShieldAlert } from "lucide-react"
+import { AlertCircle, Activity, Video, HardDrive, ShieldAlert, BarChart3 } from "lucide-react"
 
 export default function DashboardOverview() {
   return (
@@ -57,8 +57,9 @@ export default function DashboardOverview() {
             <CardDescription>Network and recording status across all regions.</CardDescription>
           </CardHeader>
           <CardContent className="pl-2">
-            <div className="h-[300px] flex items-center justify-center text-muted-foreground bg-muted/20 rounded-md border border-dashed m-4">
-              [Activity Chart Placeholder]
+            <div className="h-[300px] flex flex-col items-center justify-center text-muted-foreground bg-muted/20 rounded-md border border-dashed m-4">
+              <BarChart3 className="w-12 h-12 mb-2 opacity-50" />
+              <span className="text-sm opacity-50">Activity Chart Not Configured</span>
             </div>
           </CardContent>
         </Card>

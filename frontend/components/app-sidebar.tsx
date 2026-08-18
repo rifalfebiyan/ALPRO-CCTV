@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Home, LayoutDashboard, MonitorPlay, Settings, Cctv, Bell } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 const SIDEBAR_ITEMS = [
   { name: "Dashboard", href: "/", icon: <LayoutDashboard size={20} /> },
@@ -25,8 +26,8 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="p-4 border-b">
         <div className="flex items-center gap-2 font-bold text-lg text-primary">
-          <Cctv size={24} />
-          <span>ALPRO CCTV</span>
+          <Image src="/logo-alpro.png" alt="ALPRO Logo" width={28} height={28} className="object-contain" />
+          <span className="truncate">ALPRO SS</span>
         </div>
       </SidebarHeader>
       <SidebarContent>

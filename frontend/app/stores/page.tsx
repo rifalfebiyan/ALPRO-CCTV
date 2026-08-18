@@ -59,7 +59,7 @@ export default async function StoresRegistry() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[100px]">Store Code</TableHead>
+                            <TableHead>Store Code</TableHead>
                             <TableHead>Store Name</TableHead>
                             <TableHead>Region</TableHead>
                             <TableHead>NVR / DVR Model</TableHead>
