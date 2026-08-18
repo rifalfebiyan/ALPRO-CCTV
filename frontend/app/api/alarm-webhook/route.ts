@@ -24,7 +24,19 @@ export async function POST(request: Request) {
             console.error("Gagal simpan ke Supabase:", error)
         }
 
-        return NextResponse.json({ success: true, message: "Data alarm aman masuk ke Supabase Next.js" })
+        // Simpan juga ke tabel LOG RIWAYAT (append-only, tidak pernah tertimpa)
+        const { error: logError } = await supabase.from('iot_alarm_logs').insert({
+            store_code: data.id,
+            store_name: data.nama,
+            status: data.status,
+            description: data.keterangan,
+        })
+
+        if (logError) {
+            console.error("Gagal simpan log riwayat:", logError)
+        }
+
+        return NextResponse.json({ success: true, message: "Data alarm & log riwayat masuk ke Supabase" })
     } catch (error) {
         console.error("Webhook Error:", error)
         return NextResponse.json({ success: false, error: "Gagal memproses data" }, { status: 500 })

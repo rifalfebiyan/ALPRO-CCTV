@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Activity, ShieldCheck, ShieldAlert, Wifi, MessageSquare, Bot, Clock } from "lucide-react"
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
+import { ShieldCheck, ShieldAlert, Bot, Clock, ListOrdered } from "lucide-react"
 import { createClient } from "@/lib/server"
 
 // Memaksa Next.js untuk tidak me-cache halaman ini agar data selalu ter-refresh secara LIVE
@@ -9,23 +10,31 @@ export const revalidate = 0;
 export default async function IoTAlarmPage() {
     const supabase = await createClient()
 
-    // Menarik semua data Webhook IoT dari database
-    const { data: alarms, error } = await supabase
+    // Menarik semua data status terbaru IoT dari database
+    const { data: alarms } = await supabase
         .from('iot_alarms')
         .select('*')
         .order('last_updated', { ascending: false })
 
+    // Menarik 50 riwayat log terbaru
+    const { data: logs } = await supabase
+        .from('iot_alarm_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50)
+
     return (
-        <div className="flex-1 p-4 md:p-8 pt-6 space-y-6 overflow-y-auto h-full">
+        <div className="flex-1 p-4 md:p-8 pt-6 space-y-8 overflow-y-auto h-full">
+            {/* SECTION 1: STATUS TERKINI */}
             <div>
-                <h2 className="text-2xl font-bold tracking-tight">Oasis Alarm System (Live DB)</h2>
-                <p className="text-muted-foreground mt-1">Monitoring status IoT Alarm berdasarkan tarikan data Webhook asli dari ESP32.</p>
+                <h2 className="text-2xl font-bold tracking-tight">Oasis Alarm System</h2>
+                <p className="text-muted-foreground mt-1">Monitoring status IoT Alarm cabang via Webhook ESP32.</p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {(!alarms || alarms.length === 0) && (
                     <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed rounded-xl">
-                        Belum ada tembakan alarm masuk dari alat ESP32. <br /> Coba tekan tombol / jalankan sensor ESP Anda sekarang untuk men-trigger Webhook-nya!
+                        Belum ada data alarm masuk dari ESP32.
                     </div>
                 )}
 
@@ -70,7 +79,7 @@ export default async function IoTAlarmPage() {
                                         </span>
                                     </div>
                                     <div className="text-[10px] text-muted-foreground pt-2 flex justify-between border-t border-primary/10">
-                                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Terakhir Update: {new Date(alarm.last_updated).toLocaleTimeString('id-ID')}</span>
+                                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> Update: {new Date(alarm.last_updated).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}</span>
                                     </div>
                                 </div>
                             </CardContent>
@@ -79,12 +88,54 @@ export default async function IoTAlarmPage() {
                 })}
             </div>
 
-            {/* API Reference Banner */}
-            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 p-4 md:p-6 rounded-xl text-xs sm:text-sm mt-8">
-                <h4 className="font-bold flex items-center gap-2 mb-2 text-base"><Bot className="w-5 h-5" /> IoT Mode Aktif (Berbasis Webhook)</h4>
-                <p className="leading-relaxed text-emerald-600/90 dark:text-emerald-300">
-                    Halaman ini sekarang secara resmi mengambil data dari tabel <strong>iot_alarms</strong> di Database Supabase Anda! Layar biru percontohan (desain statis) sebelumnya sudah dihapus. Data yang ada di kotak putih di atas secara absolut mewakili alat keras Anda.
-                </p>
+            {/* SECTION 2: RIWAYAT LOG */}
+            <div>
+                <h3 className="text-lg font-bold tracking-tight flex items-center gap-2 mb-4">
+                    <ListOrdered className="w-5 h-5" /> Riwayat Log Alarm (50 Terbaru)
+                </h3>
+                <Card className="shadow-sm">
+                    <CardContent className="p-0">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[180px]">Waktu</TableHead>
+                                    <TableHead>Kode Toko</TableHead>
+                                    <TableHead>Nama Toko</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Keterangan</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {(!logs || logs.length === 0) ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                                            Belum ada riwayat log.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    logs.map((log: any) => {
+                                        const isAlarm = log.status === "ALARM!!"
+                                        return (
+                                            <TableRow key={log.id} className={isAlarm ? 'bg-red-50 dark:bg-red-950/20' : ''}>
+                                                <TableCell className="text-xs font-mono">
+                                                    {new Date(log.created_at).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}
+                                                </TableCell>
+                                                <TableCell className="font-semibold">{log.store_code}</TableCell>
+                                                <TableCell className="text-xs">{log.store_name}</TableCell>
+                                                <TableCell>
+                                                    <Badge variant={isAlarm ? "destructive" : "secondary"} className="text-[10px]">
+                                                        {log.status}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="text-xs">{log.description || "-"}</TableCell>
+                                            </TableRow>
+                                        )
+                                    })
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     )
