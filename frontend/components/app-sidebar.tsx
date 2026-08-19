@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +14,7 @@ import {
 import { Home, LayoutDashboard, MonitorPlay, Settings, Cctv, Bell } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 
 const SIDEBAR_ITEMS = [
   { name: "Dashboard", href: "/", icon: <LayoutDashboard size={20} /> },
@@ -22,6 +25,8 @@ const SIDEBAR_ITEMS = [
 ]
 
 export function AppSidebar() {
+  const pathname = usePathname()
+
   return (
     <Sidebar>
       <SidebarHeader className="p-4 border-b">
@@ -33,14 +38,17 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="mt-4">
-            {SIDEBAR_ITEMS.map((item) => (
-              <SidebarMenuItem title={item.name} key={item.name}>
-                <SidebarMenuButton render={<Link href={item.href} />}>
-                  {item.icon}
-                  <span>{item.name}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {SIDEBAR_ITEMS.map((item) => {
+              const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href))
+              return (
+                <SidebarMenuItem title={item.name} key={item.name}>
+                  <SidebarMenuButton render={<Link href={item.href} />} isActive={isActive}>
+                    {item.icon}
+                    <span>{item.name}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
