@@ -8,23 +8,40 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { createClient } from "@/lib/server"
+import { AlarmActions } from "@/components/alarm-actions"
+import { DataPagination } from "@/components/data-pagination"
 
 // Memaksa Next.js untuk tidak me-cache halaman ini agar data selalu ter-refresh secara LIVE
 export const revalidate = 0;
 
-export default async function IoTAlarmPage() {
+export default async function IoTAlarmPage(props: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
+    const searchParams = props.searchParams ? await props.searchParams : undefined
+    const aPage = searchParams?.aPage ? parseInt(searchParams.aPage as string, 10) : 1
+    const lPage = searchParams?.lPage ? parseInt(searchParams.lPage as string, 10) : 1
+    const limit = 10
+
+    const aFrom = (aPage - 1) * limit
+    const aTo = aFrom + limit - 1
+
+    const lFrom = (lPage - 1) * limit
+    const lTo = lFrom + limit - 1
+
     const supabase = await createClient()
 
-    const { data: alarms } = await supabase
+    const { data: alarms, count: aCount } = await supabase
         .from('iot_alarms')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('last_updated', { ascending: false })
+        .range(aFrom, aTo)
 
-    const { data: logs } = await supabase
+    const { data: logs, count: lCount } = await supabase
         .from('iot_alarm_logs')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('created_at', { ascending: false })
-        .limit(50)
+        .range(lFrom, lTo)
+
+    const aTotalPages = aCount ? Math.ceil(aCount / limit) : 0
+    const lTotalPages = lCount ? Math.ceil(lCount / limit) : 0
 
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
@@ -75,13 +92,8 @@ export default async function IoTAlarmPage() {
                                         <TableCell className="text-right text-muted-foreground">
                                             {new Date(alarm.last_updated).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}
                                         </TableCell>
-                                        <TableCell className="text-center space-x-1">
-                                            <button type="button" className="text-xs bg-muted hover:bg-muted/80 text-foreground px-2 py-1 rounded-sm shadow-sm border transition">
-                                                Status
-                                            </button>
-                                            <button type="button" className="text-xs bg-red-100 hover:bg-red-200 text-red-600 dark:bg-red-900/40 dark:text-red-400 dark:hover:bg-red-900/60 border-red-200 dark:border-red-800 px-2 py-1 rounded-sm shadow-sm border transition">
-                                                Matikan
-                                            </button>
+                                        <TableCell className="text-center">
+                                            <AlarmActions storeCode={alarm.store_code} storeName={alarm.store_name} />
                                         </TableCell>
                                     </TableRow>
                                 )
@@ -89,6 +101,17 @@ export default async function IoTAlarmPage() {
                         )}
                     </TableBody>
                 </Table>
+            </div>
+
+            <div className="flex items-center justify-between py-2 pl-4 pr-1">
+                <div className="text-xs text-muted-foreground">
+                    Showing {alarms?.length || 0} of {aCount || 0} entries
+                </div>
+                <DataPagination
+                    currentPage={aPage}
+                    totalPages={aTotalPages}
+                    createPageUrl={(p) => `/alarms?aPage=${p}&lPage=${lPage}`}
+                />
             </div>
 
             {/* TABEL RIWAYAT LOG */}
@@ -136,10 +159,15 @@ export default async function IoTAlarmPage() {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="text-xs text-muted-foreground mr-4">
-                    Showing {logs?.length || 0} entries
+            <div className="flex items-center justify-between py-2 pl-4 pr-1">
+                <div className="text-xs text-muted-foreground">
+                    Showing {logs?.length || 0} of {lCount || 0} entries
                 </div>
+                <DataPagination
+                    currentPage={lPage}
+                    totalPages={lTotalPages}
+                    createPageUrl={(p) => `/alarms?aPage=${aPage}&lPage=${p}`}
+                />
             </div>
         </div>
     )

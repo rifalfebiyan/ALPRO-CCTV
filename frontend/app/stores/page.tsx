@@ -12,12 +12,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, MonitorPlay, Settings2, Plus } from "lucide-react"
 import Link from "next/link"
+import { DataPagination } from "@/components/data-pagination"
 
-export default async function StoresRegistry() {
+export default async function StoresRegistry(props: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
+    const searchParams = props.searchParams ? await props.searchParams : undefined
+    const currentPage = searchParams?.page ? parseInt(searchParams.page as string, 10) : 1
+    const limit = 10
+    const from = (currentPage - 1) * limit
+    const to = from + limit - 1
+
     const supabase = await createClient()
 
     // Mengambil daftar stores dari Supabase, beserta jumlah NVR jika ada
-    const { data: stores, error } = await supabase
+    const { data: stores, count, error } = await supabase
         .from('stores')
         .select(`
       id,
@@ -28,8 +35,11 @@ export default async function StoresRegistry() {
       nvrs (
         model
       )
-    `)
+    `, { count: 'exact' })
         .order('created_at', { ascending: false })
+        .range(from, to)
+
+    const totalPages = count ? Math.ceil(count / limit) : 0
 
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
@@ -104,12 +114,15 @@ export default async function StoresRegistry() {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="text-xs text-muted-foreground mr-4">
-                    Showing {stores?.length || 0} entries
+            <div className="flex items-center justify-between py-4 pl-4 pr-1">
+                <div className="text-xs text-muted-foreground">
+                    Showing {stores?.length || 0} of {count || 0} entries
                 </div>
-                <Button variant="outline" size="sm" disabled>Previous</Button>
-                <Button variant="outline" size="sm" disabled={true}>Next</Button>
+                <DataPagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    createPageUrl={(p) => `/stores?page=${p}`}
+                />
             </div>
         </div>
     )
