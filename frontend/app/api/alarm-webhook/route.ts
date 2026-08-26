@@ -31,16 +31,20 @@ export async function POST(request: Request) {
             console.error("Gagal simpan ke Supabase:", error)
         }
 
-        // Simpan juga ke tabel LOG RIWAYAT (append-only, tidak pernah tertimpa)
-        const { error: logError } = await supabase.from('iot_alarm_logs').insert({
-            store_code: storeCode,
-            store_name: storeName,
-            status: status,
-            description: description,
-        })
+        // Simpan ke tabel LOG RIWAYAT HANYA untuk kejadian PENTING (bukan heartbeat rutin)
+        // Ini mencegah database membengkak 8 juta baris/bulan dari heartbeat 200 toko
+        const statusPenting = ['ALARM!!', 'SIAGA', 'OFF', 'PENDING', 'OFFLINE', 'TIMEOUT', 'CONNECTED', 'WARNING']
+        if (statusPenting.includes(status)) {
+            const { error: logError } = await supabase.from('iot_alarm_logs').insert({
+                store_code: storeCode,
+                store_name: storeName,
+                status: status,
+                description: description,
+            })
 
-        if (logError) {
-            console.error("Gagal simpan log riwayat:", logError)
+            if (logError) {
+                console.error("Gagal simpan log riwayat:", logError)
+            }
         }
 
         return NextResponse.json({ success: true, message: "Data alarm & log riwayat masuk ke Supabase" })
