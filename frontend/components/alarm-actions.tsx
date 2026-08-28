@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useRouter } from "next/navigation"
 
 interface AlarmActionsProps {
     storeCode: string
@@ -41,6 +42,8 @@ export function AlarmActions({ storeCode, storeName }: AlarmActionsProps) {
     const [picDialog, setPicDialog] = useState<"add" | "edit" | "delete" | null>(null)
     const [picPhone, setPicPhone] = useState("")
     const [picIndex, setPicIndex] = useState("")
+    const [deleteConfirm, setDeleteConfirm] = useState(false)
+    const router = useRouter()
 
     function showFeedback(msg: string) {
         setFeedback(msg)
@@ -78,6 +81,25 @@ export function AlarmActions({ storeCode, storeName }: AlarmActionsProps) {
             setPicDialog(null)
             setPicPhone("")
             setPicIndex("")
+        }
+    }
+
+    async function handleDeleteDbData() {
+        setLoading(true)
+        try {
+            const res = await fetch(`/api/alarms?storeCode=${storeCode}`, { method: 'DELETE' })
+            const data = await res.json()
+            if (data.success) {
+                showFeedback("Data Terhapus")
+                router.refresh()
+            } else {
+                showFeedback(data.error || "Gagal Hapus")
+            }
+        } catch {
+            showFeedback("Network Error")
+        } finally {
+            setLoading(false)
+            setDeleteConfirm(false)
         }
     }
 
@@ -124,6 +146,14 @@ export function AlarmActions({ storeCode, storeName }: AlarmActionsProps) {
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setPicDialog("delete")} className="text-red-600 dark:text-red-400">
                                 Hapus PIC
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground font-normal">Manajemen Data</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => setDeleteConfirm(true)} className="text-red-600 dark:text-red-400 font-medium">
+                                Hapus Info Perangkat
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                     </DropdownMenuContent>
@@ -195,6 +225,25 @@ export function AlarmActions({ storeCode, storeName }: AlarmActionsProps) {
                         <Button variant="secondary" onClick={() => setPicDialog(null)}>Batal</Button>
                         <Button variant="destructive" onClick={handlePicSubmit} disabled={!picIndex || loading}>
                             {loading ? "Mengirim..." : "Hapus PIC"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Dialog: Hapus Data Perangkat */}
+            <Dialog open={deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(false)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="text-red-600">Hapus Perangkat — {storeCode}</DialogTitle>
+                        <DialogDescription>
+                            Apakah Anda yakin ingin menghapus data alarm Toko <strong>{storeName}</strong> dari database?
+                            Tindakan ini tidak dapat dibatalkan, namun data akan terbuat kembali secara otomatis apabila mesin ESP32 Toko mengirimkan sinyal Heartbeat.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="secondary" onClick={() => setDeleteConfirm(false)}>Batal</Button>
+                        <Button variant="destructive" onClick={handleDeleteDbData} disabled={loading}>
+                            {loading ? "Menghapus..." : "Ya, Hapus Saja"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

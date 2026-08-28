@@ -31,10 +31,13 @@ export async function POST(request: Request) {
             console.error("Gagal simpan ke Supabase:", error)
         }
 
+        const isHeartbeat = description?.toLowerCase().includes('heartbeat') || false
+
         // Simpan ke tabel LOG RIWAYAT HANYA untuk kejadian PENTING (bukan heartbeat rutin)
-        // Ini mencegah database membengkak 8 juta baris/bulan dari heartbeat 200 toko
+        // Ini mencegah database membengkak 8 juta baris/bulan dari heartbeat (termasuk saat berstatus SIAGA)
         const statusPenting = ['ALARM!!', 'SIAGA', 'OFF', 'PENDING', 'OFFLINE', 'TIMEOUT', 'CONNECTED', 'WARNING']
-        if (statusPenting.includes(status)) {
+
+        if (statusPenting.includes(status) && !isHeartbeat) {
             const { error: logError } = await supabase.from('iot_alarm_logs').insert({
                 store_code: storeCode,
                 store_name: storeName,

@@ -8,6 +8,8 @@ import { UserNav } from "@/components/user-nav"
 
 import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
+import { Suspense } from 'react'
+import { NotificationNavServer } from '@/components/notification-nav-server'
 
 export default async function DashboardLayout({
     children,
@@ -50,7 +52,9 @@ export default async function DashboardLayout({
                         </div>
                         <div className="flex items-center gap-2">
                             <ThemeToggle />
-                            <Bell className="h-5 w-5 text-muted-foreground cursor-pointer hover:text-foreground" />
+                            <Suspense fallback={<Bell className="h-5 w-5 text-muted-foreground animate-pulse" />}>
+                                <NotificationNavServer />
+                            </Suspense>
                             <UserNav userData={userData} />
                         </div>
                     </header>
