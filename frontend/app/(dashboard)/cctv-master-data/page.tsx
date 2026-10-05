@@ -2,6 +2,7 @@ import { createClient } from "@/lib/server"
 import { AddDataDialog } from "./components"
 import { ColumnManager } from "./column-manager"
 import { CctvClientTable } from "./cctv-client-table"
+import { StatusMetrics } from "./status-metrics"
 
 export default async function CctvMasterDataPage(props: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
     const searchParams = props.searchParams ? await props.searchParams : undefined
@@ -47,23 +48,38 @@ export default async function CctvMasterDataPage(props: { searchParams?: Promise
     const { data: rows, count, error } = await query.range(from, to)
     const totalPages = Math.ceil((count || 0) / limit)
 
+    // Side-query for Global Metrics Visualization (Lightweight fetch)
+    const { data: globalStatusData } = await supabase.from("cctv_master_data").select("status");
+    const counts = {
+        total: globalStatusData?.length || 0,
+        active: globalStatusData?.filter(d => d.status === "Normal" || d.status === "Active").length || 0,
+        warning: globalStatusData?.filter(d => d.status === "Warning").length || 0,
+        maintenance: globalStatusData?.filter(d => d.status === "Maintenance").length || 0,
+        repaired: globalStatusData?.filter(d => d.status === "Repaired").length || 0,
+        disconnected: globalStatusData?.filter(d => d.status === "Disconnected").length || 0,
+    }
+
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
-            <div className="flex items-center justify-between space-y-2">
+            <div className="flex items-center justify-between space-y-2 mb-2">
                 <h2 className="text-3xl font-bold tracking-tight">CCTV Master Data</h2>
-                <div className="flex items-center gap-2">
-                    <ColumnManager customColumns={customColumns} deletedStandardCols={deletedStandardCols} />
-                    <AddDataDialog customColumns={customColumns} deletedStandardCols={deletedStandardCols} />
-                </div>
             </div>
 
+            <StatusMetrics counts={counts} />
+
             <CctvClientTable
-                rows={rows || []}
+                rows={rows?.map(r => ({ ...r, status: r.status === "Active" ? "Normal" : r.status })) || []}
                 customColumns={customColumns}
                 deletedStandardCols={deletedStandardCols}
                 count={count || 0}
                 currentPage={page}
                 totalPages={totalPages}
+                actions={
+                    <>
+                        <ColumnManager customColumns={customColumns} deletedStandardCols={deletedStandardCols} />
+                        <AddDataDialog customColumns={customColumns} deletedStandardCols={deletedStandardCols} />
+                    </>
+                }
             />
         </div>
     )

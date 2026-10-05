@@ -36,12 +36,14 @@ export function FilterControls({
     customColumns,
     deletedStandardCols,
     hiddenCols,
-    toggleCol
+    toggleCol,
+    actions
 }: {
     customColumns?: any[],
     deletedStandardCols: string[],
     hiddenCols: string[],
-    toggleCol: (id: string) => void
+    toggleCol: (id: string) => void,
+    actions?: React.ReactNode
 }) {
     const router = useRouter()
     const pathname = usePathname()
@@ -94,10 +96,10 @@ export function FilterControls({
     return (
         <div className="flex flex-col sm:flex-row items-center gap-4 pb-4">
             <div className="relative flex-1 max-w-sm w-full">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
                 <Input
                     placeholder="Search outlet, PIC, or SN..."
-                    className="pl-8"
+                    className="pl-8 h-8 text-xs"
                     value={searchTerm}
                     onChange={(e) => handleSearch(e.target.value)}
                 />
@@ -105,12 +107,12 @@ export function FilterControls({
             <div className="flex items-center gap-2 w-full sm:w-auto">
                 <span className="text-sm font-medium whitespace-nowrap">Status:</span>
                 <select
-                    className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm w-full sm:w-32"
+                    className="h-8 rounded-md border border-input bg-background px-3 py-1 text-xs w-full sm:w-32"
                     value={status}
                     onChange={(e) => updateParams("status", e.target.value)}
                 >
                     <option value="ALL">All</option>
-                    <option value="Active">Active</option>
+                    <option value="Normal">Normal</option>
                     <option value="Disconnected">Disconnected</option>
                     <option value="Maintenance">Maintenance</option>
                     <option value="Repaired">Repaired</option>
@@ -120,7 +122,7 @@ export function FilterControls({
             <div className="flex items-center gap-2 w-full sm:w-auto">
                 <span className="text-sm font-medium whitespace-nowrap">Region:</span>
                 <select
-                    className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm w-full sm:w-48"
+                    className="h-8 rounded-md border border-input bg-background px-3 py-1 text-xs w-full sm:w-48"
                     value={region}
                     onChange={(e) => updateParams("region", e.target.value)}
                 >
@@ -144,7 +146,7 @@ export function FilterControls({
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto">
                 <DropdownMenu>
-                    <DropdownMenuTrigger render={<Button variant="outline" className="h-10" />}>
+                    <DropdownMenuTrigger render={<Button variant="outline" className="h-8 text-xs font-semibold" />}>
                         Columns
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56 max-h-96" align="end">
@@ -159,6 +161,7 @@ export function FilterControls({
                         ))}
                     </DropdownMenuContent>
                 </DropdownMenu>
+                {actions}
             </div>
         </div>
     )

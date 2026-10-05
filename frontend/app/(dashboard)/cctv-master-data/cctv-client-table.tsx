@@ -17,7 +17,7 @@ import {
 
 const getStatusColor = (status: string) => {
     switch (status) {
-        case "Active": return 'bg-emerald-500/15 text-emerald-500';
+        case "Normal": return 'bg-emerald-500/15 text-emerald-500';
         case "Disconnected": return 'bg-rose-500/15 text-rose-500';
         case "Maintenance": return 'bg-blue-500/15 text-blue-500';
         case "Repaired": return 'bg-teal-500/15 text-teal-600';
@@ -28,7 +28,7 @@ const getStatusColor = (status: string) => {
 
 const getRowAccent = (status: string) => {
     switch (status) {
-        case "Active": return 'bg-emerald-500/5 hover:bg-emerald-500/15 border-l-[3px] border-l-emerald-500 transition-colors';
+        case "Normal": return 'bg-emerald-500/5 hover:bg-emerald-500/15 border-l-[3px] border-l-emerald-500 transition-colors';
         case "Disconnected": return 'bg-rose-500/5 hover:bg-rose-500/15 border-l-[3px] border-l-rose-500 transition-colors';
         case "Maintenance": return 'bg-blue-500/5 hover:bg-blue-500/15 border-l-[3px] border-l-blue-500 transition-colors';
         case "Repaired": return 'bg-teal-500/5 hover:bg-teal-500/15 border-l-[3px] border-l-teal-500 transition-colors';
@@ -43,14 +43,16 @@ export function CctvClientTable({
     deletedStandardCols,
     count,
     currentPage,
-    totalPages
+    totalPages,
+    actions
 }: {
     rows: any[],
     customColumns: any[],
     deletedStandardCols: string[],
     count: number,
     currentPage: number,
-    totalPages: number
+    totalPages: number,
+    actions?: React.ReactNode
 }) {
     const [hiddenCols, setHiddenCols] = useState<string[]>([])
 
@@ -109,6 +111,7 @@ export function CctvClientTable({
                 deletedStandardCols={deletedStandardCols}
                 hiddenCols={hiddenCols}
                 toggleCol={toggleCol}
+                actions={actions}
             />
 
             <div className="rounded-xl border border-border/60 bg-card shadow-md w-full overflow-x-auto">

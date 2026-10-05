@@ -53,7 +53,7 @@ export function AddDataDialog({ customColumns, deletedStandardCols }: { customCo
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button className="gap-2" />}>
+            <DialogTrigger render={<Button className="gap-2 h-8 text-xs" />}>
                 <Plus size={16} /> Add Data
             </DialogTrigger>
             <DialogContent className="w-[95vw] sm:max-w-2xl md:max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -157,12 +157,12 @@ export function AddDataDialog({ customColumns, deletedStandardCols }: { customCo
                             )}
                             <div className="space-y-2">
                                 <Label>Status</Label>
-                                <Select name="status" defaultValue="Active">
+                                <Select name="status" defaultValue="Normal">
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Select Status" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="Active">Active</SelectItem>
+                                        <SelectItem value="Normal">Normal</SelectItem>
                                         <SelectItem value="Disconnected">Disconnected</SelectItem>
                                         <SelectItem value="Maintenance">Maintenance</SelectItem>
                                         <SelectItem value="Repaired">Repaired</SelectItem>
@@ -342,12 +342,12 @@ export function EditDataDialog({ data, customColumns, deletedStandardCols }: { d
                             )}
                             <div className="space-y-2">
                                 <Label>Status</Label>
-                                <Select name="status" defaultValue={data.status || "Active"}>
+                                <Select name="status" defaultValue={data.status || "Normal"}>
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Select Status" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="Active">Active</SelectItem>
+                                        <SelectItem value="Normal">Normal</SelectItem>
                                         <SelectItem value="Disconnected">Disconnected</SelectItem>
                                         <SelectItem value="Maintenance">Maintenance</SelectItem>
                                         <SelectItem value="Repaired">Repaired</SelectItem>

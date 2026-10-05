@@ -99,7 +99,7 @@ export async function editCctvData(id: string, formData: FormData) {
         device_to_replace: formData.get("device_to_replace") as string,
         device_qty: parseInt(formData.get("device_qty") as string) || 0,
         result: formData.get("result") as string,
-        status: formData.get("status") as string || "Active",
+        status: formData.get("status") as string || "Normal",
         updated_at: new Date().toISOString(),
         dynamic_fields: {} as Record<string, string>
     };

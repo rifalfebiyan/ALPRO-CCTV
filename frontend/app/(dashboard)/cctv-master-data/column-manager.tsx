@@ -63,7 +63,7 @@ export function ColumnManager({ customColumns, deletedStandardCols }: { customCo
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button variant="outline" className="gap-2" />}>
+            <DialogTrigger render={<Button variant="outline" className="gap-2 h-8 text-xs" />}>
                 <Settings size={16} /> Edit Table Schema
             </DialogTrigger>
             <DialogContent className="max-w-md">
