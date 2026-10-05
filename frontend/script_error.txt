@@ -1,0 +1,13 @@
+file:///C:/Users/HP/Documents/GitHub/ALPRO-CCTV/frontend/node_modules/@supabase/supabase-js/dist/index.mjs:628
+		if (!supabaseKey) throw new Error("supabaseKey is required.");
+		                        ^
+
+Error: supabaseKey is required.
+    at new SupabaseClient (file:///C:/Users/HP/Documents/GitHub/ALPRO-CCTV/frontend/node_modules/@supabase/supabase-js/dist/index.mjs:628:27)
+    at createClient (file:///C:/Users/HP/Documents/GitHub/ALPRO-CCTV/frontend/node_modules/@supabase/supabase-js/dist/index.mjs:867:9)
+    at file:///C:/Users/HP/Documents/GitHub/ALPRO-CCTV/frontend/scripts/migrate_cctv.mjs:18:18
+    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.13.0

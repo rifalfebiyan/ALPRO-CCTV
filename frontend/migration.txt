@@ -1,0 +1,33 @@
+Fetching Google Sheets data...
+Pulls 220 rows... Migrating to Supabase!
+Batch insert failed: {
+  code: 'PGRST205',
+  details: null,
+  hint: null,
+  message: "Could not find the table 'public.cctv_master_data' in the schema cache"
+}
+Batch insert failed: {
+  code: 'PGRST205',
+  details: null,
+  hint: null,
+  message: "Could not find the table 'public.cctv_master_data' in the schema cache"
+}
+Batch insert failed: {
+  code: 'PGRST205',
+  details: null,
+  hint: null,
+  message: "Could not find the table 'public.cctv_master_data' in the schema cache"
+}
+Batch insert failed: {
+  code: 'PGRST205',
+  details: null,
+  hint: null,
+  message: "Could not find the table 'public.cctv_master_data' in the schema cache"
+}
+Batch insert failed: {
+  code: 'PGRST205',
+  details: null,
+  hint: null,
+  message: "Could not find the table 'public.cctv_master_data' in the schema cache"
+}
+MIGRATION COMPLETE!

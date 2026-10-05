@@ -1,0 +1,12 @@
+app/(dashboard)/cctv-master-data/components.tsx(37,28): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & Props<unknown>'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & Props<unknown>'.
+app/(dashboard)/cctv-master-data/components.tsx(127,38): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & DialogCloseProps'.
+app/(dashboard)/cctv-master-data/components.tsx(156,28): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & Props<unknown>'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & Props<unknown>'.
+app/(dashboard)/cctv-master-data/components.tsx(247,38): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & DialogCloseProps'.
+app/(dashboard)/cctv-master-data/components.tsx(276,28): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & Props<unknown>'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & Props<unknown>'.
+app/(dashboard)/cctv-master-data/components.tsx(287,34): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & DialogCloseProps'.

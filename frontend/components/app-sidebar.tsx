@@ -22,14 +22,15 @@ const SIDEBAR_ITEMS = [
   { name: "IoT Alarm", href: "/alarms", icon: <Bell size={20} /> },
   { name: "Monitoring Viewer", href: "/monitoring", icon: <MonitorPlay size={20} /> },
   { name: "Settings", href: "/settings", icon: <Settings size={20} /> },
+  { name: "CCTV Master Data", href: "/cctv-master-data", icon: <Cctv size={20} /> },
 ]
 
 export function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <Sidebar>
-      <SidebarHeader className="p-4 border-b">
+    <Sidebar className="bg-muted/30 border-r border-border/50">
+      <SidebarHeader className="p-4 border-b bg-background/50">
         <div className="flex items-center gap-2 font-bold text-lg text-primary">
           <Image src="/logo-alpro.png" alt="ALPRO Logo" width={28} height={28} className="object-contain" />
           <span className="truncate">ALPRO SS</span>
