@@ -20,6 +20,7 @@ const getStatusColor = (status: string) => {
         case "Active": return 'bg-emerald-500/15 text-emerald-500';
         case "Disconnected": return 'bg-rose-500/15 text-rose-500';
         case "Maintenance": return 'bg-blue-500/15 text-blue-500';
+        case "Repaired": return 'bg-teal-500/15 text-teal-600';
         case "Warning": return 'bg-amber-500/15 text-amber-500';
         default: return 'bg-slate-500/15 text-slate-500';
     }
@@ -30,6 +31,7 @@ const getRowAccent = (status: string) => {
         case "Active": return 'bg-emerald-500/5 hover:bg-emerald-500/15 border-l-[3px] border-l-emerald-500 transition-colors';
         case "Disconnected": return 'bg-rose-500/5 hover:bg-rose-500/15 border-l-[3px] border-l-rose-500 transition-colors';
         case "Maintenance": return 'bg-blue-500/5 hover:bg-blue-500/15 border-l-[3px] border-l-blue-500 transition-colors';
+        case "Repaired": return 'bg-teal-500/5 hover:bg-teal-500/15 border-l-[3px] border-l-teal-500 transition-colors';
         case "Warning": return 'bg-amber-500/5 hover:bg-amber-500/15 border-l-[3px] border-l-amber-500 transition-colors';
         default: return 'even:bg-muted/30 hover:bg-muted/50 border-l-[3px] border-l-transparent transition-colors';
     }

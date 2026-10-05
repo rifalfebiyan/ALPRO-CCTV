@@ -113,6 +113,7 @@ export function FilterControls({
                     <option value="Active">Active</option>
                     <option value="Disconnected">Disconnected</option>
                     <option value="Maintenance">Maintenance</option>
+                    <option value="Repaired">Repaired</option>
                     <option value="Warning">Warning</option>
                 </select>
             </div>

@@ -165,6 +165,7 @@ export function AddDataDialog({ customColumns, deletedStandardCols }: { customCo
                                         <SelectItem value="Active">Active</SelectItem>
                                         <SelectItem value="Disconnected">Disconnected</SelectItem>
                                         <SelectItem value="Maintenance">Maintenance</SelectItem>
+                                        <SelectItem value="Repaired">Repaired</SelectItem>
                                         <SelectItem value="Warning">Warning</SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -349,6 +350,7 @@ export function EditDataDialog({ data, customColumns, deletedStandardCols }: { d
                                         <SelectItem value="Active">Active</SelectItem>
                                         <SelectItem value="Disconnected">Disconnected</SelectItem>
                                         <SelectItem value="Maintenance">Maintenance</SelectItem>
+                                        <SelectItem value="Repaired">Repaired</SelectItem>
                                         <SelectItem value="Warning">Warning</SelectItem>
                                     </SelectContent>
                                 </Select>
