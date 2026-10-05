@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import { Home, LayoutDashboard, MonitorPlay, Settings, Cctv, Bell } from "lucide-react"
+import { Home, LayoutDashboard, MonitorPlay, Settings, Cctv, Bell, History } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
@@ -21,8 +21,9 @@ const SIDEBAR_ITEMS = [
   { name: "Stores", href: "/stores", icon: <Home size={20} /> },
   { name: "IoT Alarm", href: "/alarms", icon: <Bell size={20} /> },
   { name: "Monitoring Viewer", href: "/monitoring", icon: <MonitorPlay size={20} /> },
-  { name: "Settings", href: "/settings", icon: <Settings size={20} /> },
   { name: "CCTV Master Data", href: "/cctv-master-data", icon: <Cctv size={20} /> },
+  { name: "Audit Logs", href: "/audit-logs", icon: <History size={20} /> },
+  { name: "Settings", href: "/settings", icon: <Settings size={20} /> },
 ]
 
 export function AppSidebar() {

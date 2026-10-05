@@ -15,6 +15,7 @@ import {
     DialogFooter,
     DialogClose,
 } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export function AddDataDialog({ customColumns, deletedStandardCols }: { customColumns?: any[], deletedStandardCols?: string[] }) {
     const isDeleted = (id: string) => deletedStandardCols ? deletedStandardCols.includes(id) : false;
@@ -55,131 +56,138 @@ export function AddDataDialog({ customColumns, deletedStandardCols }: { customCo
             <DialogTrigger render={<Button className="gap-2" />}>
                 <Plus size={16} /> Add Data
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="w-[95vw] sm:max-w-2xl md:max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Add CCTV Master Data</DialogTitle>
                 </DialogHeader>
                 <form action={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-1">
-                            <Label>Outlet Name</Label>
-                            <Input name="outlet_name" required />
-                        </div>
-                        {!isDeleted('pic') && (
-                            <div className="space-y-1">
-                                <Label>PIC</Label>
-                                <Input name="pic" />
+                    <div className="grid gap-6 py-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Outlet Name</Label>
+                                <Input name="outlet_name" required />
                             </div>
-                        )}
-                        {!isDeleted('sn') && (
-                            <div className="space-y-1">
-                                <Label>Serial Number</Label>
-                                <Input name="serial_number" />
-                            </div>
-                        )}
-                        {!isDeleted('urgency') && (
-                            <div className="space-y-1">
-                                <Label>Urgency Point</Label>
-                                <Input name="urgency_point" placeholder="e.g. 80%" value={urgency} onChange={e => setUrgency(e.target.value)} />
-                            </div>
-                        )}
-                        {!isDeleted('region') && (
-                            <div className="space-y-1">
-                                <Label>Region</Label>
-                                <Input name="region" />
-                            </div>
-                        )}
-                        {!isDeleted('date') && (
-                            <div className="space-y-1">
-                                <Label>Check Date</Label>
-                                <Input name="check_date" placeholder="DD/MM/YYYY" />
-                            </div>
-                        )}
-                        {!isDeleted('warranty') && (
-                            <div className="space-y-1">
-                                <Label>Warranty Status</Label>
-                                <Input name="warranty_status" />
-                            </div>
-                        )}
-                        {!isDeleted('distance') && (
-                            <div className="space-y-1">
-                                <Label>Distance to HO</Label>
-                                <Input name="distance_to_ho" />
-                            </div>
-                        )}
+                            {!isDeleted('pic') && (
+                                <div className="space-y-2">
+                                    <Label>PIC</Label>
+                                    <Input name="pic" />
+                                </div>
+                            )}
+                            {!isDeleted('sn') && (
+                                <div className="space-y-2">
+                                    <Label>Serial Number</Label>
+                                    <Input name="serial_number" />
+                                </div>
+                            )}
+                            {!isDeleted('urgency') && (
+                                <div className="space-y-2">
+                                    <Label>Urgency Point</Label>
+                                    <Input name="urgency_point" placeholder="e.g. 80%" value={urgency} onChange={e => setUrgency(e.target.value)} />
+                                </div>
+                            )}
+                            {!isDeleted('region') && (
+                                <div className="space-y-2">
+                                    <Label>Region</Label>
+                                    <Input name="region" />
+                                </div>
+                            )}
+                            {!isDeleted('date') && (
+                                <div className="space-y-2">
+                                    <Label>Check Date</Label>
+                                    <Input name="check_date" placeholder="DD/MM/YYYY" />
+                                </div>
+                            )}
+                            {!isDeleted('warranty') && (
+                                <div className="space-y-2">
+                                    <Label>Warranty Status</Label>
+                                    <Input name="warranty_status" />
+                                </div>
+                            )}
+                            {!isDeleted('distance') && (
+                                <div className="space-y-2">
+                                    <Label>Distance to HO</Label>
+                                    <Input name="distance_to_ho" />
+                                </div>
+                            )}
 
-                        <div className="col-span-2 grid grid-cols-4 gap-4 py-2 border-y">
-                            {!isDeleted('shrinkage') && (
-                                <label className="flex items-center space-x-2">
-                                    <input type="checkbox" name="shrinkage" onChange={handleCheckboxChange} className="w-4 h-4 rounded text-primary" />
-                                    <span className="text-sm">Shrinkage</span>
-                                </label>
-                            )}
-                            {!isDeleted('alarm') && (
-                                <label className="flex items-center space-x-2">
-                                    <input type="checkbox" name="alarm" onChange={handleCheckboxChange} className="w-4 h-4 rounded text-primary" />
-                                    <span className="text-sm">Alarm</span>
-                                </label>
-                            )}
-                            {!isDeleted('onsite') && (
-                                <label className="flex items-center space-x-2">
-                                    <input type="checkbox" name="onsite_damage" onChange={handleCheckboxChange} className="w-4 h-4 rounded text-primary" />
-                                    <span className="text-sm">Onsite Damage</span>
-                                </label>
-                            )}
-                            {!isDeleted('nontech') && (
-                                <label className="flex items-center space-x-2">
-                                    <input type="checkbox" name="non_tech_damage" onChange={handleCheckboxChange} className="w-4 h-4 rounded text-primary" />
-                                    <span className="text-sm">Non-Tech Damage</span>
-                                </label>
-                            )}
-                        </div>
+                            <div className="col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3 py-2">
+                                {!isDeleted('shrinkage') && (
+                                    <label className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors">
+                                        <input type="checkbox" name="shrinkage" onChange={handleCheckboxChange} className="accent-primary w-4 h-4 shrink-0" />
+                                        <span className="text-sm font-medium leading-tight">Shrinkage</span>
+                                    </label>
+                                )}
+                                {!isDeleted('alarm') && (
+                                    <label className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors">
+                                        <input type="checkbox" name="alarm" onChange={handleCheckboxChange} className="accent-primary w-4 h-4 shrink-0" />
+                                        <span className="text-sm font-medium leading-tight">Alarm</span>
+                                    </label>
+                                )}
+                                {!isDeleted('onsite') && (
+                                    <label className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors">
+                                        <input type="checkbox" name="onsite_damage" onChange={handleCheckboxChange} className="accent-primary w-4 h-4 shrink-0" />
+                                        <span className="text-sm font-medium leading-tight">Onsite</span>
+                                    </label>
+                                )}
+                                {!isDeleted('nontech') && (
+                                    <label className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors">
+                                        <input type="checkbox" name="non_tech_damage" onChange={handleCheckboxChange} className="accent-primary w-4 h-4 shrink-0" />
+                                        <span className="text-sm font-medium leading-tight">Non-Tech</span>
+                                    </label>
+                                )}
+                            </div>
 
-                        {!isDeleted('prob_channel') && (
-                            <div className="space-y-1">
-                                <Label>Problem Channel</Label>
-                                <Input name="problem_channel" />
+                            {!isDeleted('prob_channel') && (
+                                <div className="space-y-2">
+                                    <Label>Problem Channel</Label>
+                                    <Input name="problem_channel" />
+                                </div>
+                            )}
+                            {!isDeleted('device') && (
+                                <div className="space-y-2">
+                                    <Label>Device to Replace</Label>
+                                    <Input name="device_to_replace" />
+                                </div>
+                            )}
+                            {!isDeleted('qty') && (
+                                <div className="space-y-2">
+                                    <Label>Device Qty</Label>
+                                    <Input name="device_qty" type="number" defaultValue="0" />
+                                </div>
+                            )}
+                            <div className="space-y-2">
+                                <Label>Status</Label>
+                                <Select name="status" defaultValue="Active">
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Active">Active</SelectItem>
+                                        <SelectItem value="Disconnected">Disconnected</SelectItem>
+                                        <SelectItem value="Maintenance">Maintenance</SelectItem>
+                                        <SelectItem value="Warning">Warning</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
-                        )}
-                        {!isDeleted('device') && (
-                            <div className="space-y-1">
-                                <Label>Device to Replace</Label>
-                                <Input name="device_to_replace" />
-                            </div>
-                        )}
-                        {!isDeleted('qty') && (
-                            <div className="space-y-1">
-                                <Label>Device Qty</Label>
-                                <Input name="device_qty" type="number" defaultValue="0" />
-                            </div>
-                        )}
-                        <div className="space-y-1">
-                            <Label>Status</Label>
-                            <select name="status" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                                <option value="Active">Active</option>
-                                <option value="Disconnected">Disconnected</option>
-                                <option value="Maintenance">Maintenance</option>
-                                <option value="Warning">Warning</option>
-                            </select>
+                            {!isDeleted('prob_detail') && (
+                                <div className="space-y-2 col-span-2">
+                                    <Label>Problem Detail</Label>
+                                    <Input name="problem_detail" />
+                                </div>
+                            )}
+                            {!isDeleted('result') && (
+                                <div className="space-y-2 col-span-2">
+                                    <Label>Result / Note</Label>
+                                    <Input name="result" />
+                                </div>
+                            )}
+                            {customColumns && customColumns.length > 0 && customColumns.map(col => (
+                                <div key={col.id} className="space-y-2">
+                                    <Label>{col.column_label}</Label>
+                                    <Input name={`custom_${col.column_key}`} />
+                                </div>
+                            ))}
                         </div>
-                        {!isDeleted('prob_detail') && (
-                            <div className="space-y-1 col-span-2">
-                                <Label>Problem Detail</Label>
-                                <Input name="problem_detail" />
-                            </div>
-                        )}
-                        {!isDeleted('result') && (
-                            <div className="space-y-1 col-span-2">
-                                <Label>Result / Note</Label>
-                                <Input name="result" />
-                            </div>
-                        )}
-                        {customColumns && customColumns.length > 0 && customColumns.map(col => (
-                            <div key={col.id} className="space-y-1">
-                                <Label>{col.column_label}</Label>
-                                <Input name={`custom_${col.column_key}`} />
-                            </div>
-                        ))}
                     </div>
                     <DialogFooter>
                         <DialogClose render={<Button type="button" variant="outline" />}>
@@ -232,132 +240,138 @@ export function EditDataDialog({ data, customColumns, deletedStandardCols }: { d
             <DialogTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" />}>
                 <Edit size={16} />
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="w-[95vw] sm:max-w-2xl md:max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Edit Data</DialogTitle>
                 </DialogHeader>
                 <form action={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        {/* Keeping it simple and using same structure */}
-                        <div className="space-y-1">
-                            <Label>Outlet Name</Label>
-                            <Input name="outlet_name" defaultValue={data.outlet_name} required />
-                        </div>
-                        {!isDeleted('pic') && (
-                            <div className="space-y-1">
-                                <Label>PIC</Label>
-                                <Input name="pic" defaultValue={data.pic} />
+                    <div className="grid gap-6 py-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Outlet Name</Label>
+                                <Input name="outlet_name" defaultValue={data.outlet_name} required />
                             </div>
-                        )}
-                        {!isDeleted('sn') && (
-                            <div className="space-y-1">
-                                <Label>Serial Number</Label>
-                                <Input name="serial_number" defaultValue={data.serial_number} />
-                            </div>
-                        )}
-                        {!isDeleted('urgency') && (
-                            <div className="space-y-1">
-                                <Label>Urgency Point</Label>
-                                <Input name="urgency_point" value={urgency} onChange={e => setUrgency(e.target.value)} />
-                            </div>
-                        )}
-                        {!isDeleted('region') && (
-                            <div className="space-y-1">
-                                <Label>Region</Label>
-                                <Input name="region" defaultValue={data.region} />
-                            </div>
-                        )}
-                        {!isDeleted('date') && (
-                            <div className="space-y-1">
-                                <Label>Check Date</Label>
-                                <Input name="check_date" defaultValue={data.check_date} />
-                            </div>
-                        )}
-                        {!isDeleted('warranty') && (
-                            <div className="space-y-1">
-                                <Label>Warranty Status</Label>
-                                <Input name="warranty_status" defaultValue={data.warranty_status} />
-                            </div>
-                        )}
-                        {!isDeleted('distance') && (
-                            <div className="space-y-1">
-                                <Label>Distance to HO</Label>
-                                <Input name="distance_to_ho" defaultValue={data.distance_to_ho} />
-                            </div>
-                        )}
+                            {!isDeleted('pic') && (
+                                <div className="space-y-2">
+                                    <Label>PIC</Label>
+                                    <Input name="pic" defaultValue={data.pic} />
+                                </div>
+                            )}
+                            {!isDeleted('sn') && (
+                                <div className="space-y-2">
+                                    <Label>Serial Number</Label>
+                                    <Input name="serial_number" defaultValue={data.serial_number} />
+                                </div>
+                            )}
+                            {!isDeleted('urgency') && (
+                                <div className="space-y-2">
+                                    <Label>Urgency Point</Label>
+                                    <Input name="urgency_point" value={urgency} onChange={e => setUrgency(e.target.value)} />
+                                </div>
+                            )}
+                            {!isDeleted('region') && (
+                                <div className="space-y-2">
+                                    <Label>Region</Label>
+                                    <Input name="region" defaultValue={data.region} />
+                                </div>
+                            )}
+                            {!isDeleted('date') && (
+                                <div className="space-y-2">
+                                    <Label>Check Date</Label>
+                                    <Input name="check_date" defaultValue={data.check_date} />
+                                </div>
+                            )}
+                            {!isDeleted('warranty') && (
+                                <div className="space-y-2">
+                                    <Label>Warranty Status</Label>
+                                    <Input name="warranty_status" defaultValue={data.warranty_status} />
+                                </div>
+                            )}
+                            {!isDeleted('distance') && (
+                                <div className="space-y-2">
+                                    <Label>Distance to HO</Label>
+                                    <Input name="distance_to_ho" defaultValue={data.distance_to_ho} />
+                                </div>
+                            )}
 
-                        <div className="col-span-2 grid grid-cols-4 gap-4 py-2 border-y">
-                            {!isDeleted('shrinkage') && (
-                                <label className="flex items-center space-x-2">
-                                    <input type="checkbox" name="shrinkage" defaultChecked={data.shrinkage} onChange={handleCheckboxChange} className="w-4 h-4 rounded" />
-                                    <span className="text-sm">Shrinkage</span>
-                                </label>
-                            )}
-                            {!isDeleted('alarm') && (
-                                <label className="flex items-center space-x-2">
-                                    <input type="checkbox" name="alarm" defaultChecked={data.alarm} onChange={handleCheckboxChange} className="w-4 h-4 rounded" />
-                                    <span className="text-sm">Alarm</span>
-                                </label>
-                            )}
-                            {!isDeleted('onsite') && (
-                                <label className="flex items-center space-x-2">
-                                    <input type="checkbox" name="onsite_damage" defaultChecked={data.onsite_damage} onChange={handleCheckboxChange} className="w-4 h-4 rounded" />
-                                    <span className="text-sm">Onsite</span>
-                                </label>
-                            )}
-                            {!isDeleted('nontech') && (
-                                <label className="flex items-center space-x-2">
-                                    <input type="checkbox" name="non_tech_damage" defaultChecked={data.non_tech_damage} onChange={handleCheckboxChange} className="w-4 h-4 rounded" />
-                                    <span className="text-sm">Non-Tech</span>
-                                </label>
-                            )}
-                        </div>
+                            <div className="col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3 py-2">
+                                {!isDeleted('shrinkage') && (
+                                    <label className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors">
+                                        <input type="checkbox" name="shrinkage" defaultChecked={data.shrinkage} onChange={handleCheckboxChange} className="accent-primary w-4 h-4 shrink-0" />
+                                        <span className="text-sm font-medium leading-tight">Shrinkage</span>
+                                    </label>
+                                )}
+                                {!isDeleted('alarm') && (
+                                    <label className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors">
+                                        <input type="checkbox" name="alarm" defaultChecked={data.alarm} onChange={handleCheckboxChange} className="accent-primary w-4 h-4 shrink-0" />
+                                        <span className="text-sm font-medium leading-tight">Alarm</span>
+                                    </label>
+                                )}
+                                {!isDeleted('onsite') && (
+                                    <label className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors">
+                                        <input type="checkbox" name="onsite_damage" defaultChecked={data.onsite_damage} onChange={handleCheckboxChange} className="accent-primary w-4 h-4 shrink-0" />
+                                        <span className="text-sm font-medium leading-tight">Onsite</span>
+                                    </label>
+                                )}
+                                {!isDeleted('nontech') && (
+                                    <label className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors">
+                                        <input type="checkbox" name="non_tech_damage" defaultChecked={data.non_tech_damage} onChange={handleCheckboxChange} className="accent-primary w-4 h-4 shrink-0" />
+                                        <span className="text-sm font-medium leading-tight">Non-Tech</span>
+                                    </label>
+                                )}
+                            </div>
 
-                        {!isDeleted('prob_channel') && (
-                            <div className="space-y-1">
-                                <Label>Problem Channel</Label>
-                                <Input name="problem_channel" defaultValue={data.problem_channel} />
+                            {!isDeleted('prob_channel') && (
+                                <div className="space-y-2">
+                                    <Label>Problem Channel</Label>
+                                    <Input name="problem_channel" defaultValue={data.problem_channel} />
+                                </div>
+                            )}
+                            {!isDeleted('device') && (
+                                <div className="space-y-2">
+                                    <Label>Device to Replace</Label>
+                                    <Input name="device_to_replace" defaultValue={data.device_to_replace} />
+                                </div>
+                            )}
+                            {!isDeleted('qty') && (
+                                <div className="space-y-2">
+                                    <Label>Device Qty</Label>
+                                    <Input name="device_qty" type="number" defaultValue={data.device_qty} />
+                                </div>
+                            )}
+                            <div className="space-y-2">
+                                <Label>Status</Label>
+                                <Select name="status" defaultValue={data.status || "Active"}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Active">Active</SelectItem>
+                                        <SelectItem value="Disconnected">Disconnected</SelectItem>
+                                        <SelectItem value="Maintenance">Maintenance</SelectItem>
+                                        <SelectItem value="Warning">Warning</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
-                        )}
-                        {!isDeleted('device') && (
-                            <div className="space-y-1">
-                                <Label>Device to Replace</Label>
-                                <Input name="device_to_replace" defaultValue={data.device_to_replace} />
-                            </div>
-                        )}
-                        {!isDeleted('qty') && (
-                            <div className="space-y-1">
-                                <Label>Device Qty</Label>
-                                <Input name="device_qty" type="number" defaultValue={data.device_qty} />
-                            </div>
-                        )}
-                        <div className="space-y-1">
-                            <Label>Status</Label>
-                            <select name="status" defaultValue={data.status} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                                <option value="Active">Active</option>
-                                <option value="Disconnected">Disconnected</option>
-                                <option value="Maintenance">Maintenance</option>
-                                <option value="Warning">Warning</option>
-                            </select>
+                            {!isDeleted('prob_detail') && (
+                                <div className="space-y-2 col-span-2">
+                                    <Label>Problem Detail</Label>
+                                    <Input name="problem_detail" defaultValue={data.problem_detail} />
+                                </div>
+                            )}
+                            {!isDeleted('result') && (
+                                <div className="space-y-2 col-span-2">
+                                    <Label>Result / Note</Label>
+                                    <Input name="result" defaultValue={data.result} />
+                                </div>
+                            )}
+                            {customColumns && customColumns.length > 0 && customColumns.map(col => (
+                                <div key={col.id} className="space-y-2">
+                                    <Label>{col.column_label}</Label>
+                                    <Input name={`custom_${col.column_key}`} defaultValue={data.dynamic_fields?.[col.column_key] || ""} />
+                                </div>
+                            ))}
                         </div>
-                        {!isDeleted('prob_detail') && (
-                            <div className="space-y-1 col-span-2">
-                                <Label>Problem Detail</Label>
-                                <Input name="problem_detail" defaultValue={data.problem_detail} />
-                            </div>
-                        )}
-                        {!isDeleted('result') && (
-                            <div className="space-y-1 col-span-2">
-                                <Label>Result / Note</Label>
-                                <Input name="result" defaultValue={data.result} />
-                            </div>
-                        )}
-                        {customColumns && customColumns.length > 0 && customColumns.map(col => (
-                            <div key={col.id} className="space-y-1">
-                                <Label>{col.column_label}</Label>
-                                <Input name={`custom_${col.column_key}`} defaultValue={data.dynamic_fields?.[col.column_key] || ""} />
-                            </div>
-                        ))}
                     </div>
                     <DialogFooter>
                         <DialogClose render={<Button type="button" variant="outline" />}>

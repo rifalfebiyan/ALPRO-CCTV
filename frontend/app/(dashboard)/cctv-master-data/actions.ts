@@ -2,6 +2,39 @@
 
 import { createClient } from "@/lib/server"
 import { revalidatePath } from "next/cache"
+import { cookies } from "next/headers"
+import { verifyToken } from "@/lib/auth"
+
+async function logAuditAction(actionType: string, targetTable: string, targetId: string | null, oldData: any, newData: any) {
+    const supabase = await createClient();
+    const cookieStore = await cookies();
+    const token = cookieStore.get('alpro_token')?.value;
+
+    let actorId = null;
+    let actorName = 'System';
+
+    if (token) {
+        const payload = await verifyToken(token) as any;
+        if (payload) {
+            actorId = payload.id;
+            actorName = payload.name;
+        }
+    }
+
+    try {
+        await supabase.from('audit_logs').insert({
+            actor_id: actorId,
+            actor_name: actorName,
+            action_type: actionType,
+            target_table: targetTable,
+            target_id: targetId,
+            old_data: oldData ? JSON.parse(JSON.stringify(oldData)) : null,
+            new_data: newData ? JSON.parse(JSON.stringify(newData)) : null
+        });
+    } catch (e) {
+        console.error("Failed to log audit action:", e);
+    }
+}
 
 export async function addCctvData(formData: FormData) {
     const supabase = await createClient();
@@ -34,11 +67,13 @@ export async function addCctvData(formData: FormData) {
         }
     }
 
-    const { error } = await supabase.from("cctv_master_data").insert(data);
+    const { error, data: insertedData } = await supabase.from("cctv_master_data").insert(data).select().single();
     if (error) {
         console.error("Error inserting data:", error);
         throw new Error(error.message);
     }
+
+    await logAuditAction("ADD", "cctv_master_data", insertedData?.id || null, null, data);
 
     revalidatePath("/cctv-master-data");
 }
@@ -75,20 +110,30 @@ export async function editCctvData(id: string, formData: FormData) {
         }
     }
 
+    // Ambil data lama untuk audit trail
+    const { data: oldData } = await supabase.from("cctv_master_data").select("*").eq("id", id).single();
+
     const { error } = await supabase.from("cctv_master_data").update(data).eq("id", id);
     if (error) {
         throw new Error(error.message);
     }
+
+    await logAuditAction("EDIT", "cctv_master_data", id, oldData, data);
 
     revalidatePath("/cctv-master-data");
 }
 
 export async function deleteCctvData(id: string) {
     const supabase = await createClient();
+    const { data: oldData } = await supabase.from("cctv_master_data").select("*").eq("id", id).single();
+
     const { error } = await supabase.from("cctv_master_data").delete().eq("id", id);
     if (error) {
         throw new Error(error.message);
     }
+
+    await logAuditAction("DELETE", "cctv_master_data", id, oldData, null);
+
     revalidatePath("/cctv-master-data");
 }
 
