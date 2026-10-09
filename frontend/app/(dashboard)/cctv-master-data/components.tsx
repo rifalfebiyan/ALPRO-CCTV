@@ -202,11 +202,10 @@ export function AddDataDialog({ customColumns, deletedStandardCols }: { customCo
     )
 }
 
-export function EditDataDialog({ data, customColumns, deletedStandardCols }: { data: any, customColumns?: any[], deletedStandardCols?: string[] }) {
+export function EditDataDialog({ data, open, setOpen, customColumns, deletedStandardCols }: { data: any, open: boolean, setOpen: (o: boolean) => void, customColumns?: any[], deletedStandardCols?: string[] }) {
     const isDeleted = (id: string) => deletedStandardCols ? deletedStandardCols.includes(id) : false;
-    const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [urgency, setUrgency] = useState(data.urgency_point || "")
+    const [urgency, setUrgency] = useState(data?.urgency_point || "")
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const form = e.target.form;
@@ -236,11 +235,10 @@ export function EditDataDialog({ data, customColumns, deletedStandardCols }: { d
         }
     }
 
+    if (!data) return null;
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" />}>
-                <Edit size={16} />
-            </DialogTrigger>
             <DialogContent className="w-[95vw] sm:max-w-2xl md:max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Edit Data</DialogTitle>
@@ -387,11 +385,11 @@ export function EditDataDialog({ data, customColumns, deletedStandardCols }: { d
     )
 }
 
-export function DeleteDataDialog({ id }: { id: string }) {
-    const [open, setOpen] = useState(false)
+export function DeleteDataDialog({ id, open, setOpen }: { id: string | null, open: boolean, setOpen: (o: boolean) => void }) {
     const [loading, setLoading] = useState(false)
 
     async function handleDelete() {
+        if (!id) return;
         setLoading(true)
         try {
             await deleteCctvData(id)
@@ -405,9 +403,6 @@ export function DeleteDataDialog({ id }: { id: string }) {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger render={<Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" />}>
-                <Trash2 size={16} />
-            </DialogTrigger>
             <DialogContent className="max-w-md">
                 <DialogHeader>
                     <DialogTitle>Delete Data</DialogTitle>

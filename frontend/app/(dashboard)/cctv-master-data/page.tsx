@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/server"
 import { AddDataDialog } from "./components"
+import { ImportExportControls } from "./import-export-controls"
 import { ColumnManager } from "./column-manager"
 import { CctvClientTable } from "./cctv-client-table"
 import { StatusMetrics } from "./status-metrics"
@@ -76,6 +77,7 @@ export default async function CctvMasterDataPage(props: { searchParams?: Promise
                 totalPages={totalPages}
                 actions={
                     <>
+                        <ImportExportControls rows={rows || []} customColumns={customColumns} />
                         <ColumnManager customColumns={customColumns} deletedStandardCols={deletedStandardCols} />
                         <AddDataDialog customColumns={customColumns} deletedStandardCols={deletedStandardCols} />
                     </>

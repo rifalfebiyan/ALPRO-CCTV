@@ -44,7 +44,7 @@ function MetricCard({ title, value, statusKey }: { title: string, value: number,
 export function StatusMetrics({ counts }: { counts: StatusCounts }) {
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-4">
-            <MetricCard title="Total Units" value={counts.total} statusKey="Total" />
+            <MetricCard title="Total Stores" value={counts.total} statusKey="Total" />
             <MetricCard title="Normal" value={counts.active} statusKey="Normal" />
             <MetricCard title="Warning" value={counts.warning} statusKey="Warning" />
             <MetricCard title="Maintenance" value={counts.maintenance} statusKey="Maintenance" />

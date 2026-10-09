@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useTransition } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { bulkDeleteCctv, bulkUpdateCctvStatus } from "./actions"
 import { FilterControls, RowLimitSelector } from "./filter-controls"
 import { DataPagination } from "@/components/data-pagination"
 import { AddDataDialog, EditDataDialog, DeleteDataDialog } from "./components"
-import { Check, Minus, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react"
+import { Check, Minus, ArrowUp, ArrowDown, ArrowUpDown, Edit, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
     Table,
     TableHeader,
@@ -14,6 +16,7 @@ import {
     TableBody,
     TableCell,
 } from "@/components/ui/table"
+import { Checkbox } from "@/components/ui/checkbox"
 
 const getStatusColor = (status: string) => {
     switch (status) {
@@ -55,6 +58,10 @@ export function CctvClientTable({
     actions?: React.ReactNode
 }) {
     const [hiddenCols, setHiddenCols] = useState<string[]>([])
+    const [selectedIds, setSelectedIds] = useState<string[]>([])
+    const [isPending, startTransition] = useTransition()
+    const [editingRow, setEditingRow] = useState<any>(null)
+    const [deletingRowId, setDeletingRowId] = useState<string | null>(null)
 
     const searchParams = useSearchParams()
     const router = useRouter()
@@ -89,6 +96,38 @@ export function CctvClientTable({
         router.push(`?${params.toString()}`)
     }
 
+    const toggleAll = () => {
+        if (selectedIds.length === rows.length) {
+            setSelectedIds([])
+        } else {
+            setSelectedIds(rows.map(r => r.id))
+        }
+    }
+
+    const toggleRow = (id: string) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter(i => i !== id))
+        } else {
+            setSelectedIds([...selectedIds, id])
+        }
+    }
+
+    const handleBulkDelete = () => {
+        if (!confirm(`Are you absolutely sure you want to permanently delete ${selectedIds.length} CCTV devices?`)) return;
+        startTransition(async () => {
+            await bulkDeleteCctv(selectedIds)
+            setSelectedIds([]) // clear selection
+        })
+    }
+
+    const handleBulkStatus = (newStatus: string) => {
+        if (!newStatus) return;
+        startTransition(async () => {
+            await bulkUpdateCctvStatus(selectedIds, newStatus)
+            setSelectedIds([]) // clear selection
+        })
+    }
+
     const SortableHead = ({ id, label, dbCol = id, className = "" }: { id: string, label: string, dbCol?: string, className?: string }) => {
         if (!isVisible(id)) return null;
         return (
@@ -118,6 +157,12 @@ export function CctvClientTable({
                 <Table>
                     <TableHeader className="bg-muted sticky top-0 z-30 shadow-sm">
                         <TableRow className="hover:bg-transparent border-b-0">
+                            <TableHead className="w-12 pl-4">
+                                <Checkbox
+                                    checked={rows && rows.length > 0 && selectedIds.length === rows.length}
+                                    onCheckedChange={toggleAll}
+                                />
+                            </TableHead>
                             <SortableHead id="outlet" label="Outlet" dbCol="outlet_name" />
                             <SortableHead id="pic" label="PIC" />
                             <SortableHead id="sn" label="SN" dbCol="serial_number" />
@@ -148,7 +193,13 @@ export function CctvClientTable({
                     </TableHeader>
                     <TableBody>
                         {rows && rows.length > 0 ? rows.map((row) => (
-                            <TableRow key={row.id} className={getRowAccent(row.status)}>
+                            <TableRow key={row.id} className={`${getRowAccent(row.status)} ${selectedIds.includes(row.id) ? 'bg-primary/5' : ''}`}>
+                                <TableCell className="pl-4">
+                                    <Checkbox
+                                        checked={selectedIds.includes(row.id)}
+                                        onCheckedChange={() => toggleRow(row.id)}
+                                    />
+                                </TableCell>
                                 {isVisible("outlet") && <TableCell className="font-medium whitespace-nowrap">{row.outlet_name}</TableCell>}
                                 {isVisible("pic") && <TableCell className="whitespace-nowrap">{row.pic}</TableCell>}
                                 {isVisible("sn") && <TableCell className="whitespace-nowrap text-muted-foreground">{row.serial_number}</TableCell>}
@@ -180,8 +231,12 @@ export function CctvClientTable({
                                 </TableCell>}
                                 <TableCell className="whitespace-nowrap text-right border-l sticky right-0 bg-card z-10 shadow-[-12px_0_15px_-5px_rgba(0,0,0,0.05)]">
                                     <div className="flex items-center justify-end">
-                                        <EditDataDialog data={row} customColumns={customColumns} deletedStandardCols={deletedStandardCols} />
-                                        <DeleteDataDialog id={row.id} />
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => setEditingRow(row)}>
+                                            <Edit size={16} />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => setDeletingRowId(row.id)}>
+                                            <Trash2 size={16} />
+                                        </Button>
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -195,6 +250,52 @@ export function CctvClientTable({
                     </TableBody>
                 </Table>
             </div>
+
+            <EditDataDialog
+                data={editingRow}
+                open={!!editingRow}
+                setOpen={(val) => !val && setEditingRow(null)}
+                customColumns={customColumns}
+                deletedStandardCols={deletedStandardCols}
+            />
+            <DeleteDataDialog
+                id={deletingRowId}
+                open={!!deletingRowId}
+                setOpen={(val) => !val && setDeletingRowId(null)}
+            />
+
+            {selectedIds.length > 0 && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background shadow-xl rounded-full px-6 py-3 flex items-center justify-between gap-6 animate-in slide-in-from-bottom-5">
+                    <div className="font-medium text-sm flex items-center gap-2">
+                        <div className="bg-background/20 rounded-full h-6 min-w-6 px-2 flex items-center justify-center text-xs">
+                            {selectedIds.length}
+                        </div>
+                        selected
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <select
+                            className="bg-background text-foreground h-8 rounded-md px-3 text-xs border-0 outline-none w-32 cursor-pointer disabled:opacity-50"
+                            onChange={(e) => handleBulkStatus(e.target.value)}
+                            value=""
+                            disabled={isPending}
+                        >
+                            <option value="">Set Status...</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Warning">Warning</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Repaired">Repaired</option>
+                            <option value="Disconnected">Disconnected</option>
+                        </select>
+                        <button
+                            disabled={isPending}
+                            onClick={handleBulkDelete}
+                            className="h-8 bg-destructive hover:bg-destructive/90 text-white rounded-md px-4 text-xs font-medium transition-colors disabled:opacity-50"
+                        >
+                            {isPending ? "Processing..." : "Delete Selected"}
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <div className="flex flex-col sm:flex-row items-center justify-between py-4 pl-4 pr-1 gap-4">
                 <div className="flex items-center gap-4 text-xs text-muted-foreground w-full sm:w-auto">
